@@ -20,10 +20,10 @@ if (isset($_SESSION['userid'])){
 <body>
 <?php require_once('menu.php'); ?>
 <?php require_once('login.php'); ?>
-
-<div class="mdl-cell mdl-cell--1-col mdl-cell--5-offset">
+<div class="mdl-grid">
+<div class="mdl-cell mdl-cell--12-col mdl-cell--5-offset">
 	<div class="mdl-card mdl-shadow--4dp">
-			<div class="mdl-card__title">
+	  <div class="mdl-card__title">
 		<h2 class="mdl-card__title-text">Login</h2>
 	  </div>
 	  <div class="mdl-card__supporting-text">
@@ -41,6 +41,12 @@ if (isset($_SESSION['userid'])){
 				<label class="mdl-textfield__label" for="sample3">Password</label>
 			  </div>
 			  <input type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent" value="go login!" name="loginSubmit">
+			  <i>
+			  	<?php if(!empty(filter_input(INPUT_POST, 'loginSubmit'))){
+						login($con, $url);
+					}
+				?>
+			  </i>
 			</form>
 	  </div>
 	</div>
@@ -49,7 +55,7 @@ if (isset($_SESSION['userid'])){
 			<h2 class="mdl-card__title-text">Sign up to	&nbsp; <i> Flashcards reborn</i></h2>
 	  </div>
 	  <div class="mdl-card__supporting-text">
-			We do NOT send spam, neither
+			We do NOT send spam
 	  </div>
 	  <div class="mdl-card__supporting-text">
 			<form action="<?= $_SERVER['PHP_SELF'] ?>" method="POST">
@@ -67,17 +73,21 @@ if (isset($_SESSION['userid'])){
 				<label class="mdl-textfield__label" for="sample3">Password</label>
 			  </div>
 			  <input type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent" value="go sign up	!" name="registerSubmit">
+			  <i>
+			  	<?php
+				 	if (!empty(filter_input(INPUT_POST, 'registerSubmit'))) { register($con); }
+				 ?>
+			  </i>
 			</form>
 	  </div>
 	  <div class="mdl-card__actions mdl-card--border">
 		<a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
-            <?php  ?>
 		</a>
 	  </div>
 	</div>
 	
 </div>
-
+</div>
 
 
 <!-- dont mess up from here -->

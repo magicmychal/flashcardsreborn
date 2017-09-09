@@ -8,22 +8,19 @@ $url =  'http://'.$_SERVER['HTTP_HOST'].dirname($_SERVER['PHP_SELF']).'/dash.php
 
 // if not empty - user clicks sing up button
 //LOGIN GOES HERE
-if(!empty(filter_input(INPUT_POST, 'loginSubmit'))){
+function login($con, $url){
     //read all inputs and validate them
     $mail = filter_input(INPUT_POST, 'mailLogin', FILTER_VALIDATE_EMAIL)
         or die("<div class='alert alert-danger' role='alert'>Incorrect mail</div>");
     $password = filter_input(INPUT_POST, 'passwordLogin')
         or die("<div class='alert alert-danger' role='alert'>Empty or incorrect password</div>");
-    echo $mail.$password;
     $sql = 'SELECT ID, username, password, imig_url FROM user WHERE mail=?';
     $stmt = $con->prepare($sql); //let's prepare to execute our sql, it's gonna be stored in $stmt
     $stmt->bind_param('s', $mail);
     $stmt->execute();
     $stmt->bind_result($userid, $person, $passwordhash, $img_url);
     while($stmt->fetch()){}
-    echo '<br>'.$password.'<br>'.$passwordhash;
     if (password_verify($password, $passwordhash)){
-        echo 'logged in as user '.$userid.', '.$person;
         $_SESSION['userid'] = $userid;
         $_SESSION['username'] = $mail;
         $_SESSION['person'] = $person;
@@ -33,7 +30,7 @@ if(!empty(filter_input(INPUT_POST, 'loginSubmit'))){
         header('LOCATION:'.$url);
     }
     else{
-        echo "<div class='alert alert-danger' role='alert'>Check your email or password and try again</div>";
+        echo "Check your mail and password and try again";
 
     }
 
@@ -41,7 +38,7 @@ if(!empty(filter_input(INPUT_POST, 'loginSubmit'))){
 
 
 //REGISTER HERE
-if (!empty(filter_input(INPUT_POST, 'registerSubmit'))) {
+function register($con){	
        //read all inputs and validate them
         $user = filter_input(INPUT_POST, 'nameRegister')
         or die('Invalid Name input');
@@ -71,7 +68,10 @@ if (!empty(filter_input(INPUT_POST, 'registerSubmit'))) {
             $stmt = $con->prepare($sql);
             $stmt->bind_param('sss', $user, $mail, $password);
             $stmt->execute();
-
+			$_SESSION['userid'] = $userid;
+			$_SESSION['username'] = $mail;
+			$_SESSION['person'] = $person;
+			$_SESSION['avatar'] = $img_url;
             echo 'Added ' . $stmt->affected_rows . ' users';
 
         }

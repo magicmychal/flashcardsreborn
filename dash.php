@@ -18,30 +18,26 @@ if (!isset($_SESSION['userid'])){
 </head>
 
 <body>
-<?php require_once('menu.php'); ?>
-<?php echo '<pre>' . print_r($_SESSION, TRUE) . '</pre>'; ?>
-<?php 
-function countCategories($user){
-	$sqlCount='SELECT COUNT(catID) AS categories FROM category WHERE user_ID=?';
-	$stmtCount=$con->prepare($sqlCount);
-	$stmtCount=bind_param('i', 10);
-	$stmtCount=execute();
-	$stmtCount=bind_result($catNo);
-	while($sttCount->fetch()){
-		echo $catNo;
-	}
-	$stmtCount->close();
+<?php require_once('menu.php'); 
+function countCategories($con){
+		$sqlCount='SELECT COUNT(catID) AS categories FROM category WHERE user_ID=?';
+		$stmt = $con->prepare($sqlCount); //let's prepare to execute our sql, it's gonna be stored in $stmt
+		$stmt->bind_param('s', $_SESSION['userid']);
+		$stmt->execute();
+		$stmt->bind_result($catID);
+		while($stmt->fetch()){
+			echo '<b>'.$catID.'</b>';
+		}
 }
-function countFlashcards($user){
+function countFlashcards($con){
 	$sqlCount='SELECT COUNT(flashcards.flashcardID) AS flashcardsNo FROM flashcards, category WHERE flashcards.category_catID=category.catID AND category.user_ID=?';
-	$stmtCount=$con->prepare($sqlCount);
-	$stmtCount=bind_param('i', $user);
-	$stmtCount=execute();
-	$stmtCount=bind_result($flashNo);
-	while($sttCount->fetch()){
-		echo $flashNo;
-	}
-	$stmtCount->close();
+			$stmt = $con->prepare($sqlCount); //let's prepare to execute our sql, it's gonna be stored in $stmt
+			$stmt->bind_param('s', $_SESSION['userid']);
+			$stmt->execute();
+			$stmt->bind_result($catID);
+			while($stmt->fetch()){
+				echo '<b>'.$catID.'</b>';
+			}
 }
 
 	
@@ -54,8 +50,8 @@ function countFlashcards($user){
                 <h2 class="mdl-card__title-text">Welcome, <?=$_SESSION['person']?></h2>
             </div>
             <div class="mdl-card__supporting-text">
-                <p>You have <?php countCategories(10); ?> categories<br>
-				   and xxxx flashcards in total</p>
+                <p>You have <?php countCategories($con);?> categories<br>
+				   and <?php countFlashcards($con); ?> flashcards in total</p>
             </div>
             <div class="mdl-card__actions mdl-card--border">
                 <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
@@ -67,9 +63,6 @@ function countFlashcards($user){
                 
             </div>
             <div class="mdl-card__menu">
-                <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
-                    <i class="material-icons">share</i>
-                </button>
             </div>
         </div>
     </div>

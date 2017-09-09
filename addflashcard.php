@@ -41,7 +41,7 @@ $catname = htmlspecialchars(filter_input(INPUT_GET, 'catname'));
 
 		  	</div>
 			  <div class="mdl-card__actions mdl-card--border">
-				<input type="submit" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" name="submitNewCat" value="Add new category">
+				<input type="submit" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" name="submitNewCat" value="Add new flashcard">
 			  </div>
 		  </form>
 		  <div class="mdl-card__menu">
@@ -82,7 +82,7 @@ if (!empty(filter_input(INPUT_POST, 'submitNewCat'))) {
             $stmt->bind_param('ssi', $newFlashcardName, $newFlashcardNameTranslation, $catid);
             $stmt->execute();
 
-            echo 'Added ' . $stmt->affected_rows . ' category';
+            echo 'Added ' . $stmt->affected_rows . ' flashcard';
 
         }
 

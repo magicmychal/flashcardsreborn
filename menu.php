@@ -3,7 +3,7 @@
   <header class="mdl-layout__header">
     <div class="mdl-layout__header-row">
       <!-- Title -->
-      <span class="mdl-layout-title">Flashcards reborn</span>
+      <span class="mdl-layout-title">Flashcards reborn </span>
       <!-- Add spacer, to align navigation to the right -->
       <div class="mdl-layout-spacer"></div>
       <!-- Navigation. We hide it in small screens. -->
@@ -13,9 +13,13 @@
 		if (isset($_SESSION['userid'])){
 			?>
       <a class="mdl-navigation__link" href="profile.php">Profile</a>
-      <a class="mdl-navigation__link" href="logout.php">Logout</a>
       <?php } ?>
       <a class="mdl-navigation__link" href="">Contact</a>
+      <?php
+		if (isset($_SESSION['userid'])){
+	  ?>
+      <a class="mdl-navigation__link" href="logout.php">Logout</a>
+      <?php } ?>
       </nav>
     </div>
   </header>
