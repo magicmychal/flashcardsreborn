@@ -36,13 +36,9 @@ $flashid = filter_input(INPUT_GET, 'flashid', FILTER_VALIDATE_INT);
                 Mauris sagittis pellentesque lacus eleifend lacinia...
             </div>
             <div class="mdl-card__actions mdl-card--border">
-                <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
-                    Get Started
-                </a>
-                <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
-                    Edit your profile
-                </a>
-                
+                <button onclick="goBack()" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+                    Go back
+                </button>                
             </div>
             <div class="mdl-card__menu">
                 <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
@@ -64,32 +60,56 @@ $flashid = filter_input(INPUT_GET, 'flashid', FILTER_VALIDATE_INT);
 					$stmt->execute();
 					$stmt->bind_result($flashcardID, $word, $translation, $catName);
 					while($stmt->fetch()){
-						echo ' <div class="category-card mdl-card mdl-shadow--2dp">
-								  <div class="mdl-card__title mdl-card--expand">
-									<h2 class="mdl-card__title-text">'.$word.'</h2>
-								  </div>
-								  <div class="mdl-card__title mdl-card--border">
-									<h2 class="mdl-card__title-text">'.$translation.'</h2>
-									
-									
-								  </div>
-								  <div class="mdl-card__actions mdl-card--border">
-									<a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
-									  Edit
-									</a>
-								  </div>
+						echo ' 	<div class="category-card mdl-card mdl-shadow--2dp">
+								  <form action="'.$_SERVER['PHP_SELF'].'?flashid='.$flashcardID.'" method="post">
+									  <div class="mdl-card__title mdl-card--expand">
+										  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+											<input class="mdl-textfield__input" type="text" name="newWord" placeholder="'.$word.'">
+											<label class="mdl-textfield__label" for="sample3">Word</label>
+										  </div>
+									  </div>
+									  <div class="mdl-card__title mdl-card--expand">
+										<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+											<input class="mdl-textfield__input" type="text" name="newTranslation" placeholder="'.$translation.'">
+											<label class="mdl-textfield__label" for="sample3">Translation</label>
+										  </div>
+									  </div>
+									  <div class="mdl-card__title mdl-card--border">
+										Category 
+										<select>
+											<option value="'.$flashcardID.'">Cat1</option>
+										</select>
+
+									  </div>
+									  <div class="mdl-card__actions mdl-card--border">
+										<input type="submit" name="submitChanges" value="Save changes" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+										<input type="submit" name="submitDelete" value="Delete flashcard" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">										
+									  </div>
+								   </form>
 								</div>';
+						$url =  'http://'.$_SERVER['HTTP_HOST'].dirname($_SERVER['PHP_SELF']).'/flashcards.php?catid=1&catname=sample.php';
 					}
 				if(!empty(filter_input(INPUT_POST, 'submitDelete', FILTER_VALIDATE_INT))){
+					echo 'it works';
 					$sqlDelete='DELETE FROM flashcards WHERE flashcardID = ?';
 					$stmtDelete=$con->prepare($sqlDelete);
-					$stmtDelete->bind_param('i', $flashcardID);
+					$stmtDelete->bind_param('i', 2);
+					$stmtDelete->execute();
+					$stmtDelete->close(); 	
+					header('HTTP/1.1 303 See other');
+    				header('LOCATION:'.$url);
+				}
+				if(!empty(filter_input(INPUT_POST, 'submitChanges', FILTER_VALIDATE_INT))){
+					$sqlDelete='DELETE FROM flashcards WHERE flashcardID = ?';
+					$stmtDelete=$con->prepare($sqlDelete);
+					$stmtDelete->bind_param('i', 2);
 					$stmtDelete->execute();
 					$stmtDelete->close(); 	
 				}
+				
 				?>  
 			 <div class="category-card mdl-card mdl-shadow--2dp">
-			  <form action="" method="post">
+			  <form action="<?= $_SERVER['PHP_SELF'] ?>" method="post">
 				  <div class="mdl-card__title mdl-card--expand">
 					  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
 						<input class="mdl-textfield__input" type="text" name="newWord" placeholder="$word">
@@ -110,18 +130,11 @@ $flashid = filter_input(INPUT_GET, 'flashid', FILTER_VALIDATE_INT);
 				  	
 				  </div>
 				  <div class="mdl-card__actions mdl-card--border">
-					<a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
-					  Edit
-					</a>
+					<input type="submit" name="submitDelete" value="Save changes" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
 				  </div>
+			   </form>
 				</div>
-			</div>            
-            </div>
-            <div class="mdl-card__menu">
-                <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
-                    <i class="material-icons">share</i>
-                </button>
-            </div>
+			</div>
         </div>
     </div>
 </div>

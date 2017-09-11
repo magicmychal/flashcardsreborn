@@ -21,7 +21,6 @@ $catname = htmlspecialchars(filter_input(INPUT_GET, 'catname'));
 
 <body>
 <?php require_once('menu.php'); ?>
-<?php echo '<pre>' . print_r($_SESSION, TRUE) . '</pre>'; ?>
 	
 
 <div class="mdl-grid">
@@ -35,18 +34,12 @@ $catname = htmlspecialchars(filter_input(INPUT_GET, 'catname'));
                 Mauris sagittis pellentesque lacus eleifend lacinia...
             </div>
             <div class="mdl-card__actions mdl-card--border">
-                <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
-                    Get Started
-                </a>
-                <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
-                    Edit your profile
-                </a>
+                <button onclick="goBack()" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+                    Go back
+                </button>
                 
             </div>
             <div class="mdl-card__menu">
-                <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
-                    <i class="material-icons">share</i>
-                </button>
             </div>
         </div>
     </div>

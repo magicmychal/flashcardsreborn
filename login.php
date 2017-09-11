@@ -48,6 +48,7 @@ function register($con){
         or die('Empty or incorrect password');
         // now, when we have all from user, password is being hashed and saled
         $password = password_hash($password, PASSWORD_DEFAULT);
+		$sampleavatar = 'files/profile/sample.png';
 
         //checking if the user exist in the database
         $sqlcheck = 'SELECT mail FROM user WHERE mail=?';
@@ -64,15 +65,11 @@ function register($con){
         } else {
 
             //now when everything works fine, it's time to put those infromation to the database
-            $sql = 'INSERT INTO user (username, mail, password) VALUES (?,?,?)';
+            $sql = 'INSERT INTO user (username, mail, password, imig_url) VALUES (?,?,?,?)';
             $stmt = $con->prepare($sql);
-            $stmt->bind_param('sss', $user, $mail, $password);
+            $stmt->bind_param('ssss', $user, $mail, $password, $sampleavatar);
             $stmt->execute();
-			$_SESSION['userid'] = $userid;
-			$_SESSION['username'] = $mail;
-			$_SESSION['person'] = $person;
-			$_SESSION['avatar'] = $img_url;
-            echo 'Added ' . $stmt->affected_rows . ' users';
+            echo 'You may now log in';
 
         }
 
