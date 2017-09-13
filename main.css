@@ -1,16 +1,19 @@
 /* Scss Document */
-.demo-card-wide.mdl-card {
+.card-wide.mdl-card {
   width: 100%; }
 
-.demo-card-wide > .mdl-card__title {
+.card-wide > .mdl-card__title {
   color: #fff;
   height: 176px;
   background: url("img/welcome_card.jpg") center/cover; }
 
-.category-card {
+.category-card-welcome {
+  background: url("img/cat2.png") center/cover !important; }
+
+.add-flash-card {
   background: url("img/cat.png") center/cover !important; }
 
-.demo-card-wide > .mdl-card__menu {
+.card-wide > .mdl-card__menu {
   color: #fff; }
 
 .category-card {

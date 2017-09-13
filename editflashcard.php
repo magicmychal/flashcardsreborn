@@ -27,7 +27,7 @@ $flashid = filter_input(INPUT_GET, 'flashid', FILTER_VALIDATE_INT);
 
 <div class="mdl-grid">
     <div class="mdl-cell mdl-cell--4-col">
-        <div class="demo-card-wide mdl-card mdl-shadow--2dp">
+        <div class="card-wide mdl-card mdl-shadow--2dp">
             <div class="mdl-card__title">
                 <h2 class="mdl-card__title-text">Welcome</h2>
             </div>
@@ -48,7 +48,7 @@ $flashid = filter_input(INPUT_GET, 'flashid', FILTER_VALIDATE_INT);
         </div>
     </div>
     <div class="mdl-cell mdl-cell--6-col">
-        <div class="demo-card-wide mdl-card mdl-shadow--2dp">
+        <div class="card-wide mdl-card mdl-shadow--2dp">
             <div class="mdl-card__actions mdl-card--border">
                <?php 
 				    $sqlFlashDisplay = 'SELECT f.flashcardID, f.word, f.translation, c.cat_name

@@ -40,7 +40,7 @@ function login($con, $url){
 //REGISTER HERE
 function register($con){	
        //read all inputs and validate them
-        $user = filter_input(INPUT_POST, 'nameRegister')
+        $user = htmlspecialchars(filter_input(INPUT_POST, 'nameRegister'))
         or die('Invalid Name input');
         $mail = filter_input(INPUT_POST, 'mailRegister', FILTER_VALIDATE_EMAIL)
         or die('Incorrect mail');

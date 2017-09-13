@@ -13,7 +13,6 @@ $cmd = filter_input(INPUT_POST, 'upload');
 		// Check if file is an image
 		 $check = getimagesize($_FILES["fileToUpload"]["tmp_name"]);
 		 if($check !== false) {
-		 echo "File is an image type " . $check["mime"] . ". ";
 		 $uploadOk = 1;
 		 } else {
 		 echo "File is not an image. ";
@@ -32,16 +31,13 @@ $cmd = filter_input(INPUT_POST, 'upload');
 		 // if everything is ok, try to upload file
 		 } else {
 		 if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
-		// the query inserting target path into database!
-			 
+		// it cannot refresh the webpage due to problems with heardes. it has been already snet in profile.pho 
 			$stmt = $con->prepare("UPDATE user SET imig_url=? WHERE ID=?");
 			$stmt->bind_param("si", $target_file, $_SESSION['userid']);
 			$stmt->execute();
 			$_SESSION['avatar'] = $target_file;
-			// close statement
 			$stmt->close();
-			header('Location: '.$_SERVER['REQUEST_URI']);
-		 echo "The file ". basename( $_FILES["fileToUpload"]["name"]). " has been uploaded.";
+		 echo "The file ". basename( $_FILES["fileToUpload"]["name"]). " has been uploaded. Refresh the page to get results";
 		 } else {
 		 echo "Sorry, there was an error uploading your file.";
 		 	}

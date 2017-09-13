@@ -21,7 +21,7 @@ if (!isset($_SESSION['userid'])){
 <!-- add new category modal -->
 <div class="mdl-grid">
     <div class="mdl-cell mdl-cell--6-col mdl-cell--3-offset">
-	  	<div class="demo-card-wide mdl-card mdl-shadow--2dp">
+	  	<div class="card-wide mdl-card mdl-shadow--2dp">
 		  <div class="mdl-card__title">
 			<h2 class="mdl-card__title-text">Add new Category</h2>
 		  </div>
@@ -35,8 +35,7 @@ if (!isset($_SESSION['userid'])){
 					<label>Input language</label>
 					<select name="inputLang">
 						<?php $sqlSelect = 'SELECT langID,lang_name FROM language';
-										$stmt = $con->prepare($sqlSelect); //let's prepare to execute our sql, it's gonna be stored in $stmt
-										//$stmt->bind_param('s', $mail);
+										$stmt = $con->prepare($sqlSelect); 
 										$stmt->execute();
 										$stmt->bind_result($langID, $langName);
 										while($stmt->fetch()){
@@ -49,8 +48,7 @@ if (!isset($_SESSION['userid'])){
 					<label>Output language</label>
 					<select name="outputLang">
 						<?php $sqlSelect = 'SELECT langID,lang_name FROM language';
-										$stmt = $con->prepare($sqlSelect); //let's prepare to execute our sql, it's gonna be stored in $stmt
-										//$stmt->bind_param('s', $mail);
+										$stmt = $con->prepare($sqlSelect); 
 										$stmt->execute();
 										$stmt->bind_result($langID, $langName);
 										while($stmt->fetch()){
@@ -76,7 +74,7 @@ if (!isset($_SESSION['userid'])){
 <?php 
 if (!empty(filter_input(INPUT_POST, 'submitNewCat'))) {
        //read all inputs and validate them
-        $newCatName = filter_input(INPUT_POST, 'newCatName')
+        $newCatName = htmlspecialchars(filter_input(INPUT_POST, 'newCatName'))
         	or die('Missing name');
         $inputLang = filter_input(INPUT_POST, 'inputLang')
         	or die('Missing lang');
@@ -104,7 +102,10 @@ if (!empty(filter_input(INPUT_POST, 'submitNewCat'))) {
             $stmt->bind_param('siii', $newCatName, $user, $inputLang, $outputLang);
             $stmt->execute();
 
-            echo 'Added ' . $stmt->affected_rows . ' category';
+            
+			$url =  'http://'.$_SERVER['HTTP_HOST'].dirname($_SERVER['PHP_SELF']).'/dash.php';
+    		header('HTTP/1.1 303 See other');
+    		header('LOCATION:'.$url);
 
         }
 

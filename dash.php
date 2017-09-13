@@ -22,7 +22,7 @@ if (!isset($_SESSION['userid'])){
 <?php require_once('menu.php'); 
 function countCategories($con){
 		$sqlCount='SELECT COUNT(catID) AS categories FROM category WHERE user_ID=?';
-		$stmt = $con->prepare($sqlCount); //let's prepare to execute our sql, it's gonna be stored in $stmt
+		$stmt = $con->prepare($sqlCount); 
 		$stmt->bind_param('s', $_SESSION['userid']);
 		$stmt->execute();
 		$stmt->bind_result($catID);
@@ -31,22 +31,36 @@ function countCategories($con){
 		}
 }
 function countFlashcards($con){
-	$sqlCount='SELECT COUNT(flashcards.flashcardID) AS flashcardsNo FROM flashcards, category WHERE flashcards.category_catID=category.catID AND category.user_ID=?';
-			$stmt = $con->prepare($sqlCount); //let's prepare to execute our sql, it's gonna be stored in $stmt
-			$stmt->bind_param('s', $_SESSION['userid']);
-			$stmt->execute();
-			$stmt->bind_result($catID);
-			while($stmt->fetch()){
-				echo '<b>'.$catID.'</b>';
-			}
+	$sqlCount='SELECT COUNT(flashcards.flashcardID) AS flashcardsNo
+				FROM flashcards, category
+				WHERE flashcards.category_catID=category.catID
+				AND category.user_ID=?';
+	$stmt = $con->prepare($sqlCount); 
+	$stmt->bind_param('s', $_SESSION['userid']);
+	$stmt->execute();
+	$stmt->bind_result($catID);
+	while($stmt->fetch()){
+		echo '<b>'.$catID.'</b>';
+	}
 }
-
+// unused for now
+function deleteCat($con, $catID){
+	$sqlUser='DELETE FROM flashcards WHERE flashcards.category_catID=?';
+	$stmt = $con->prepare($sqlUser); 
+	$stmt->bind_param('i', $catID);
+	$stmt->execute();
+	echo 'were here';
+	$sqlUser='DELETE FROM category WHERE catID=?';
+	$stmt = $con->prepare($sqlUser); 
+	$stmt->bind_param('i', $catID);
+	$stmt->execute();
 	
+}
 ?>
 
 <div class="mdl-grid">
     <div class="mdl-cell mdl-cell--4-col">
-        <div class="demo-card-wide mdl-card mdl-shadow--2dp">
+        <div class="card-wide mdl-card mdl-shadow--2dp">
             <div class="mdl-card__title" style="background: url('<?=$_SESSION['avatar']?>') center / cover">
                 <h2 class="mdl-card__title-text">Welcome, <?=$_SESSION['person']?></h2>
             </div>
@@ -68,7 +82,7 @@ function countFlashcards($con){
         </div>
     </div>
     <div class="mdl-cell mdl-cell--6-col">
-        <div class="demo-card-wide mdl-card mdl-shadow--2dp">
+        <div class="card-wide mdl-card mdl-shadow--2dp">
             <div class="mdl-card__title">
                 <h2 class="mdl-card__title-text">Categories</h2>
             </div>
@@ -88,30 +102,53 @@ function countFlashcards($con){
 									FROM category c, language l
 									WHERE c.language_langID2=l.langID
 									AND user_ID=?';
-					$stmt = $con->prepare($sqlCatDisplay); //let's prepare to execute our sql, it's gonna be stored in $stmt
+					$stmt = $con->prepare($sqlCatDisplay); 
 					$stmt->bind_param('i', $_SESSION['userid']);
 					$stmt->execute();
 					$stmt->bind_result($catID, $catName, $outputLang);
-					while($stmt->fetch()){
-						echo ' <div class="category-card mdl-card mdl-shadow--2dp">
+					while($stmt->fetch()){ ?>
+							  <div class="category-card mdl-card mdl-shadow--2dp">
 								  <div class="mdl-card__title mdl-card--expand">
-									<h2 class="mdl-card__title-text">'.$catName.'</h2>
+									<h2 class="mdl-card__title-text"><?=$catName;?></h2>
 								  </div>
 								  <div class="mdl-card__supporting-text">
-									Output language <i>'.$outputLang.'</i>
+									Output language <i><?=$outputLang;?></i>
 								  </div>
 								  <div class="mdl-card__actions mdl-card--border">
-									<a href="flashcards.php?catid='.$catID.'&catname='.$catName.'"class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
-									  See flashcards inside
-									</a>
-									<a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
-									  Edit
-									</a>
-									
+									  <a href="flashcards.php?catid=<?=$catID;?>&catname=<?=$catName;?>"class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+										  See flashcards inside
+									  </a>
+									  <!-- here can be a delete button -->
 								  </div>
-								</div>';
-					}
-				
+								</div>
+							   <!-- MODAL FOR DELETE, EVERY SINGLE CATEGORY -->
+								   <div id="deleteCat<?=$catID?>" class="modal modal__bg">
+									<div class="modal__dialog">
+									  <div class="modal__content">
+										<div class="modal__header">
+										  <div class="modal__title">
+											<h2 class="modal__title-text">Are you sure?</h2>
+										  </div>
+										  <span class="mdl-button mdl-button--icon mdl-js-button  material-icons  modal__close"></span>
+										</div>
+										<form action="<?=$_SERVER['PHP_SELF']?>" method="post" enctype="multipart/form-data">
+											<div class="modal__text">
+												Are you sure you want to delete category with all the flashcards that it containts? Once deleted it&#39;s gone forever...
+											</div>
+											<div class="modal__footer">
+											  <input type="hidden" name="categoryid" value="<?=$catID?>">
+											  <input type="submit" name="catDelete" value="Yes, delete: <?=$catID?>" class="mdl-button mdl-button--colored mdl-js-button">
+											  <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored modal__close">
+												NO! Take me back 
+											  </button>
+											  <?php if (!empty(filter_input(INPUT_POST, 'catDelete'))) { deleteCat($con, $catID); } ?>
+											</div>
+										</form>
+									  </div>
+									</div>
+								  </div>
+				<?php				
+					 }
 				?>
                
               
@@ -123,8 +160,10 @@ function countFlashcards($con){
             </div>
         </div>
     </div>
-    <div class="mdl-cell mdl-cell--2-col">2</div>
+    <div class="mdl-cell mdl-cell--2-col"></div>
 </div>
+
+<!-- MODAL FOR GETTING STARTED -->
  <div class="content">  
       <div id="getStarted" class="modal modal__bg">
         <div class="modal__dialog">
@@ -148,7 +187,6 @@ function countFlashcards($con){
           </div>
         </div>
       </div>
-      
  </div>
 
 <?php require_once('footer.php'); ?>

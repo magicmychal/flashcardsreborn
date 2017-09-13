@@ -23,8 +23,27 @@ $catname = htmlspecialchars(filter_input(INPUT_GET, 'catname'));
 
 <!-- add new category modal -->
 <div class="mdl-grid">
-    <div class="mdl-cell mdl-cell--6-col mdl-cell--3-offset">
-	  	<div class="demo-card-wide mdl-card mdl-shadow--2dp">
+   <div class="mdl-cell mdl-cell--4-col">
+        <div class="card-wide mdl-card mdl-shadow--2dp">
+            <div class="mdl-card__title add-flash-card">
+                <h2 class="mdl-card__title-text">What now?</h2>
+            </div>
+            <div class="mdl-card__supporting-text">
+                <p>Now it&#39;s a perfect moment to add a new flashcards to your category.<br>
+                Type word in your native tongue and then translation in your target language. </p>
+            </div>
+            <div class="mdl-card__actions mdl-card--border">
+                <a href="dash.php" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+                    Go back to the dashboard
+                </a>
+                <?php if (!empty(filter_input(INPUT_POST, 'submitNewFlash'))) {addNewFlash($con, $catid);} ?>
+            </div>
+            <div class="mdl-card__menu">
+            </div>
+        </div>
+    </div>
+    <div class="mdl-cell mdl-cell--6-col">
+	  	<div class="card-wide mdl-card mdl-shadow--2dp">
 		  <div class="mdl-card__title">
 			<h2 class="mdl-card__title-text">Add new flashcard in <?=$catname;?></h2>
 		  </div>
@@ -41,7 +60,7 @@ $catname = htmlspecialchars(filter_input(INPUT_GET, 'catname'));
 
 		  	</div>
 			  <div class="mdl-card__actions mdl-card--border">
-				<input type="submit" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" name="submitNewCat" value="Add new flashcard">
+				<input type="submit" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" name="submitNewFlash" value="Add new flashcard">
 			  </div>
 		  </form>
 		  <div class="mdl-card__menu">
@@ -54,7 +73,7 @@ $catname = htmlspecialchars(filter_input(INPUT_GET, 'catname'));
 	</div>
 
 <?php 
-if (!empty(filter_input(INPUT_POST, 'submitNewCat'))) {
+function addNewFlash($con, $catid){
        //read all inputs and validate them
         $newFlashcardName = htmlspecialchars(filter_input(INPUT_POST, 'newFlashcardName'))
         	or die('Missing name');
@@ -82,7 +101,7 @@ if (!empty(filter_input(INPUT_POST, 'submitNewCat'))) {
             $stmt->bind_param('ssi', $newFlashcardName, $newFlashcardNameTranslation, $catid);
             $stmt->execute();
 
-            echo 'Added ' . $stmt->affected_rows . ' flashcard';
+            echo 'Added ' . $stmt->affected_rows . ' flashcard. You can add next one or just go back to the dash';
 
         }
 

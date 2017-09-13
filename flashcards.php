@@ -1,6 +1,7 @@
 <?php session_start(); 
 
 $url =  'http://'.$_SERVER['HTTP_HOST'].dirname($_SERVER['PHP_SELF']).'/dash.php';
+$actual_link = "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
 if (!isset($_SESSION['userid'])){
     header('HTTP/1.1 303 See other');
     header('LOCATION:'.$url);
@@ -20,18 +21,35 @@ $catname = htmlspecialchars(filter_input(INPUT_GET, 'catname'));
 </head>
 
 <body>
-<?php require_once('menu.php'); ?>
+<?php require_once('menu.php'); 
+	
+if(!empty(filter_input(INPUT_POST, 'submitDelete', FILTER_VALIDATE_INT))){
+					$sqlDelete='DELETE FROM flashcards WHERE flashcardID = ?';
+					$stmtDelete=$con->prepare($sqlDelete);
+					$stmtDelete->bind_param('i', $flashcardID);
+					$stmtDelete->execute();
+					$stmtDelete->close(); 	
+				}
+if(!empty(filter_input(INPUT_POST, 'deleteFlash'))){
+	$delete = filter_input(INPUT_POST, 'categoryid')
+		or die('incorrect ID, something went wrong');
+	$sqlDelete = 'DELETE FROM flashcards WHERE flashcardID=?';
+						$stmtDelete=$con->prepare($sqlDelete);
+	$stmtDelete->bind_param('i', $delete);
+	$stmtDelete->execute();
+	$stmtDelete->close();;	
+}
+?>
 	
 
 <div class="mdl-grid">
     <div class="mdl-cell mdl-cell--4-col">
-        <div class="demo-card-wide mdl-card mdl-shadow--2dp">
-            <div class="mdl-card__title">
+        <div class="card-wide mdl-card mdl-shadow--2dp">
+            <div class="mdl-card__title category-card-welcome">
                 <h2 class="mdl-card__title-text">Welcome</h2>
             </div>
             <div class="mdl-card__supporting-text">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Mauris sagittis pellentesque lacus eleifend lacinia...
+                Here you are able to see the list of flashcards that are inside the chosen category. If there is any, just add a new one by smashing the blue plus button. The idea is to synchronize this list with your phone, so it is going to be easier to manage all your words.
             </div>
             <div class="mdl-card__actions mdl-card--border">
                 <button onclick="goBack()" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
@@ -44,20 +62,20 @@ $catname = htmlspecialchars(filter_input(INPUT_GET, 'catname'));
         </div>
     </div>
     <div class="mdl-cell mdl-cell--6-col">
-        <div class="demo-card-wide mdl-card mdl-shadow--2dp">
+        <div class="card-wide mdl-card mdl-shadow--2dp">
             <div class="mdl-card__title">
                 <h2 class="mdl-card__title-text"><?=$catname;?> category</h2>
             </div>
             <div class="mdl-card__supporting-text">
-              	<div class="mdl-grid">
-					<div class="mdl-cell mdl-cell--9">
+             	<div class="mdl-grid">
+				  <div class="mdl-cell mdl-cell--10-col">
 						Add and manage your flashcards
-					</div>
-					<div class="mdl-cell mdl-cell--3">
-						<a href="addflashcard.php?catid=<?=$catid;?>&catname=<?=$catname;?>" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
+				  </div>
+				  <div class="mdl-cell mdl-cell--2-col">
+				  	<a href="addflashcard.php?catid=<?=$catid;?>&catname=<?=$catname;?>" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
 						  <i class="material-icons">add</i>
-						</a>
-					</div>
+					</a>
+				  </div>
 				</div>
             </div>
             <div class="mdl-card__actions mdl-card--border">
@@ -67,30 +85,24 @@ $catname = htmlspecialchars(filter_input(INPUT_GET, 'catname'));
 					$stmt->bind_param('i', $catid);
 					$stmt->execute();
 					$stmt->bind_result($flashcardID, $word, $translation, $picture);
-					while($stmt->fetch()){
-						echo ' <div class="category-card mdl-card mdl-shadow--2dp">
-								  <div class="mdl-card__title mdl-card--expand">
-									<h2 class="mdl-card__title-text">'.$word.'</h2>
-								  </div>
-								  <div class="mdl-card__title mdl-card--border">
-									<h2 class="mdl-card__title-text">'.$translation.'</h2>
-									
-									
-								  </div>
-								  <div class="mdl-card__actions mdl-card--border">
-									<a href="editflashcard.php?flashid='.$flashcardID.'" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
-									  Edit
-									</a>
-								  </div>
-								</div>';
-					}
-				if(!empty(filter_input(INPUT_POST, 'submitDelete', FILTER_VALIDATE_INT))){
-					$sqlDelete='DELETE FROM flashcards WHERE flashcardID = ?';
-					$stmtDelete=$con->prepare($sqlDelete);
-					$stmtDelete->bind_param('i', $flashcardID);
-					$stmtDelete->execute();
-					$stmtDelete->close(); 	
-				}
+					while($stmt->fetch()){?>
+						<div class="category-card mdl-card mdl-shadow--2dp">
+						  <div class="mdl-card__title mdl-card--expand">
+							<h2 class="mdl-card__title-text"><?=$word;?></h2>
+						  </div>
+						  <div class="mdl-card__title mdl-card--border">
+							<h2 class="mdl-card__title-text"><?=$translation;?></h2>
+
+
+						  </div>
+						  <div class="mdl-card__actions mdl-card--border">
+							<form id="deleteForm" action="<?= $_SERVER['PHP_SELF'].'?catid='.$catid.'&catname='.$catname;?>" method="post">
+								<input type="hidden" name="categoryid" value="<?=$flashcardID?>" />
+								<button type="submit" name="deleteFlash" value="delete_category" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Delete</button>
+							</form>
+						  </div>
+						</div>
+					<?php }
 				?>              
             </div>
             <div class="mdl-card__menu">
@@ -100,11 +112,16 @@ $catname = htmlspecialchars(filter_input(INPUT_GET, 'catname'));
             </div>
         </div>
     </div>
-    <div class="mdl-cell mdl-cell--2-col">2</div>
+    <div class="mdl-cell mdl-cell--2-col"></div>
 </div>
 
 
 <?php require_once('footer.php'); ?>
 <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+<script>
+	$("#deleteForm").submit(function(e) {
+    e.preventDefault();
+});
+</script>
 </body>
 </html>

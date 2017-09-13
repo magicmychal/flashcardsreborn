@@ -14,7 +14,6 @@
 			?>
       <a class="mdl-navigation__link" href="profile.php">Profile</a>
       <?php } ?>
-      <a class="mdl-navigation__link" href="">Contact</a>
       <?php
 		if (isset($_SESSION['userid'])){
 	  ?>

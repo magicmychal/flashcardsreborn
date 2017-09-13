@@ -61,9 +61,10 @@ function changes($con, $mail){
 	}
 }
 ?>
+<?php require_once('php/profilepicupload.php'); ?>
 <div class="mdl-grid">
     <div class="mdl-cell mdl-cell--6-col mdl-cell--3-offset">
-		<div class="demo-card-wide mdl-card mdl-shadow--2dp">
+		<div class="card-wide mdl-card mdl-shadow--2dp">
 		  <div class="mdl-card__title" style="background: url('<?=$_SESSION['avatar']?>') center / cover">
 			<h2 class="mdl-card__title-text">Welcome, <?=$_SESSION['person']?></h2>
 		  </div>
@@ -92,7 +93,7 @@ function changes($con, $mail){
 			<a href="dash.php" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
               Go back to the dashboard
             </a>
-            
+   
 		  </div>
 		  <div class="mdl-card__menu">
 		  
@@ -147,7 +148,6 @@ function changes($con, $mail){
       </div>
       
  </div>
-<?php require_once('php/profilepicupload.php'); ?>
 <?php require_once('footer.php'); ?>
 </body>
 </html>
